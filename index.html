@@ -1,142 +1,146 @@
-<!DOCTYPE html>
-<html lang="th">
+<!DOCTYPE html><html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>ร้านนอนน้อย | สุ่มของ Blox Fruits</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#000;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.box{
-  width:350px;
-  background:rgba(0,0,0,0.85);
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  box-shadow:0 0 25px rgba(255,0,0,0.4);
-}
-.logo{
-  width:100%;
-  max-width:280px;
-}
-button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  color:#fff;
-  background:linear-gradient(45deg,#00c3ff,#ff0000);
-}
-input{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border-radius:8px;
-  border:none;
-}
-.result{
-  margin-top:15px;
-  min-height:40px;
-}
-.hide{display:none;}
-.small{
-  font-size:13px;
-  opacity:0.85;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>วงล้อสุ่มผล Blox Fruits</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+    .container {
+      text-align: center;
+    }
+    canvas {
+      background: #111;
+      border-radius: 50%;
+      box-shadow: 0 0 25px rgba(0,0,0,.6);
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 28px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #ff9800, #ff5722);
+      color: #fff;
+    }
+    button:active {
+      transform: scale(0.96);
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <canvas id="wheel" width="420" height="420"></canvas>
+    <br />
+    <button onclick="spin()">🎡 หมุนวงล้อ</button>
+    <div class="result" id="result">ผลที่ได้: -</div>
+  </div>  <script>
+    /* =============================
+       แก้ตรงนี้ 👇
+       ใส่รูปผลเป็น URL ทีละรูปได้เลย
+       ============================= */
+    const fruits = [
+      { name: 'Fruit 1', img: 'fruit1.png' },
+      { name: 'Fruit 2', img: 'fruit2.png' },
+      { name: 'Fruit 3', img: 'fruit3.png' },
+      { name: 'Fruit 4', img: 'fruit4.png' },
+      { name: 'Fruit 5', img: 'fruit5.png' },
+      { name: 'Fruit 6', img: 'fruit6.png' }
+    ];
 
-<div class="box">
+    const canvas = document.getElementById('wheel');
+    const ctx = canvas.getContext('2d');
+    const center = canvas.width / 2;
+    const radius = center - 10;
+    const slice = (Math.PI * 2) / fruits.length;
 
-<img src="logo.png" class="logo">
+    let angle = 0;
+    let spinning = false;
 
-<div id="menu">
-  <p>🍏 ร้านสุ่มของ Blox Fruits</p>
-  <button onclick="showRandom()">🎲 สุ่มของ</button>
-  <button onclick="showTopup()">💰 เติมเงิน TrueMoney</button>
-</div>
+    const images = [];
+    fruits.forEach((f, i) => {
+      const img = new Image();
+      img.src = f.img;
+      images[i] = img;
+    });
 
-<!-- สุ่มของ -->
-<div id="random" class="hide">
-  <button onclick="back()">⬅ กลับ</button>
-  <button onclick="randomItem()">สุ่มของ</button>
-  <div class="result" id="result">ยังไม่ได้สุ่ม</div>
-</div>
+    function drawWheel() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-<!-- เติมเงิน -->
-<div id="topup" class="hide">
-  <button onclick="back()">⬅ กลับ</button>
+      fruits.forEach((fruit, i) => {
+        const start = angle + i * slice;
+        const end = start + slice;
 
-  <p>💰 เติมเงิน TrueMoney</p>
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, start, end);
+        ctx.fillStyle = i % 2 === 0 ? '#ff9800' : '#ff5722';
+        ctx.fill();
 
-  <input placeholder="ชื่อ Roblox">
-  <input placeholder="จำนวนเงิน (บาท)">
-  <input placeholder="เบอร์ TrueMoney ที่ใช้โอน">
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(start + slice / 2);
+        ctx.textAlign = 'right';
 
-  <button onclick="copyNumber()">📋 คัดลอกเบอร์ร้าน</button>
+        if (images[i].complete) {
+          ctx.drawImage(images[i], radius - 80, -20, 40, 40);
+        }
 
-  <p class="small">
-    โอนเงินแล้ว ส่งสลิปให้แอดมิน<br>
-    ระบบสุ่มทำโดยร้าน
-  </p>
-</div>
+        ctx.restore();
+      });
 
-</div>
+      // ลูกศร
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.moveTo(center - 10, 10);
+      ctx.lineTo(center + 10, 10);
+      ctx.lineTo(center, 40);
+      ctx.fill();
+    }
 
-<script>
-const items=[
-"🔥 Dragon",
-"🌋 Dough",
-"💎 Leopard",
-"⚡ Light",
-"❄ Ice",
-"🗡 ดาบพิเศษ",
-"🎟 x2 EXP",
-"❌ พลาด"
-];
+    function spin() {
+      if (spinning) return;
+      spinning = true;
 
-function randomItem(){
-  const r=Math.floor(Math.random()*items.length);
-  document.getElementById("result").innerText=
-  "คุณได้รับ: "+items[r];
-}
+      const spinAngle = Math.random() * 2000 + 2000;
+      const duration = 4000;
+      const startTime = performance.now();
 
-function showRandom(){
-  menu.style.display="none";
-  random.style.display="block";
-}
+      function animate(time) {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
 
-function showTopup(){
-  menu.style.display="none";
-  topup.style.display="block";
-}
+        angle = (spinAngle * easeOut * Math.PI) / 180;
+        drawWheel();
 
-function back(){
-  random.style.display="none";
-  topup.style.display="none";
-  menu.style.display="block";
-}
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          spinning = false;
+          const index = Math.floor(((Math.PI * 2 - angle % (Math.PI * 2)) / slice)) % fruits.length;
+          document.getElementById('result').innerText = 'ผลที่ได้: ' + fruits[index].name;
+        }
+      }
 
-function copyNumber(){
-  navigator.clipboard.writeText("090-XXX-XXXX");
-  alert("คัดลอกเบอร์ร้านแล้ว");
-}
-</script>
+      requestAnimationFrame(animate);
+    }
 
-</body>
+    drawWheel();
+  </script></body>
 </html>
