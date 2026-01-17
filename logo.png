@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ร้านนอนน้อย | สุ่มของ Blox Fruits</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  width:350px;
+  background:rgba(0,0,0,0.85);
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 0 25px rgba(255,0,0,0.4);
+}
+.logo{
+  width:100%;
+  max-width:280px;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  color:#fff;
+  background:linear-gradient(45deg,#00c3ff,#ff0000);
+}
+input{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  border:none;
+}
+.result{
+  margin-top:15px;
+  min-height:40px;
+}
+.hide{display:none;}
+.small{
+  font-size:13px;
+  opacity:0.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<img src="logo.png" class="logo">
+
+<div id="menu">
+  <p>🍏 ร้านสุ่มของ Blox Fruits</p>
+  <button onclick="showRandom()">🎲 สุ่มของ</button>
+  <button onclick="showTopup()">💰 เติมเงิน TrueMoney</button>
+</div>
+
+<!-- สุ่มของ -->
+<div id="random" class="hide">
+  <button onclick="back()">⬅ กลับ</button>
+  <button onclick="randomItem()">สุ่มของ</button>
+  <div class="result" id="result">ยังไม่ได้สุ่ม</div>
+</div>
+
+<!-- เติมเงิน -->
+<div id="topup" class="hide">
+  <button onclick="back()">⬅ กลับ</button>
+
+  <p>💰 เติมเงิน TrueMoney</p>
+
+  <input placeholder="ชื่อ Roblox">
+  <input placeholder="จำนวนเงิน (บาท)">
+  <input placeholder="เบอร์ TrueMoney ที่ใช้โอน">
+
+  <button onclick="copyNumber()">📋 คัดลอกเบอร์ร้าน</button>
+
+  <p class="small">
+    โอนเงินแล้ว ส่งสลิปให้แอดมิน<br>
+    ระบบสุ่มทำโดยร้าน
+  </p>
+</div>
+
+</div>
+
+<script>
+const items=[
+"🔥 Dragon",
+"🌋 Dough",
+"💎 Leopard",
+"⚡ Light",
+"❄ Ice",
+"🗡 ดาบพิเศษ",
+"🎟 x2 EXP",
+"❌ พลาด"
+];
+
+function randomItem(){
+  const r=Math.floor(Math.random()*items.length);
+  document.getElementById("result").innerText=
+  "คุณได้รับ: "+items[r];
+}
+
+function showRandom(){
+  menu.style.display="none";
+  random.style.display="block";
+}
+
+function showTopup(){
+  menu.style.display="none";
+  topup.style.display="block";
+}
+
+function back(){
+  random.style.display="none";
+  topup.style.display="none";
+  menu.style.display="block";
+}
+
+function copyNumber(){
+  navigator.clipboard.writeText("090-XXX-XXXX");
+  alert("คัดลอกเบอร์ร้านแล้ว");
+}
+</script>
+
+</body>
+</html>
